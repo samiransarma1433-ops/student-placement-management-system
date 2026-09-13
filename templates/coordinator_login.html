@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>T&P Coordinator Login</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body class="bg-light">
+
+<div class="container">
+
+    <div
+        class="row justify-content-center align-items-center"
+        style="min-height: 100vh;"
+    >
+
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+
+                        <h2 class="fw-bold">
+                            T&P Coordinator Login
+                        </h2>
+
+                        <p class="text-muted">
+                            Placement Management System
+                        </p>
+
+                    </div>
+
+
+                    <!-- Flash Messages -->
+
+                    {% with messages = get_flashed_messages(
+                        with_categories=true
+                    ) %}
+
+                        {% if messages %}
+
+                            {% for category, message in messages %}
+
+                                <div
+                                    class="alert alert-{{ category }}"
+                                >
+                                    {{ message }}
+                                </div>
+
+                            {% endfor %}
+
+                        {% endif %}
+
+                    {% endwith %}
+
+
+                    <!-- Login Form -->
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('coordinator_login') }}"
+                    >
+
+                        <!-- Email -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="Enter your email"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Password -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Enter your password"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Login Button -->
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100"
+                        >
+                            Login
+                        </button>
+
+                    </form>
+
+
+                    <!-- Registration -->
+
+                    <div class="text-center mt-4">
+
+                        <p class="mb-0">
+
+                            Don't have an account?
+
+                            <a
+                                href="{{ url_for('coordinator_register') }}"
+                                class="text-decoration-none fw-semibold"
+                            >
+                                Register here
+                            </a>
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- Back to Home -->
+
+                    <div class="text-center mt-3">
+
+                        <a
+                            href="{{ url_for('home') }}"
+                            class="text-muted text-decoration-none"
+                        >
+                            ← Back to Home
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+</body>
+
+</html>

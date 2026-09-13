@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Placement Drives - Placement Management System
+    </title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            background-color: #f5f7fb;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+        }
+
+        .page-header {
+            background: linear-gradient(
+                135deg,
+                #198754,
+                #146c43
+            );
+
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .table-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .table th {
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .action-buttons {
+            min-width: 220px;
+        }
+
+        .empty-box {
+            padding: 60px 20px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar navbar-dark bg-dark">
+
+    <div class="container">
+
+        <a
+            class="navbar-brand"
+            href="{{ url_for('coordinator_dashboard') }}"
+        >
+            🎓 Placement Management System
+        </a>
+
+
+        <div>
+
+            <a
+                href="{{ url_for('coordinator_dashboard') }}"
+                class="btn btn-outline-light btn-sm me-2"
+            >
+                Dashboard
+            </a>
+
+
+            <a
+                href="{{ url_for('add_job') }}"
+                class="btn btn-success btn-sm"
+            >
+                + Post Job
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<div class="container py-5">
+
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <h2 class="fw-bold mb-2">
+            💼 Placement Drives
+        </h2>
+
+        <p class="mb-0">
+            View, edit, close and manage all placement opportunities.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         FLASH MESSAGES
+    ================================================== -->
+
+    {% with messages = get_flashed_messages(
+        with_categories=true
+    ) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="alert alert-{{ category }} alert-dismissible fade show"
+                    role="alert"
+                >
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                    ></button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =================================================
+         JOB TABLE
+    ================================================== -->
+
+    <div class="card table-card shadow-sm">
+
+        <div class="card-body p-0">
+
+
+            {% if jobs %}
+
+                <div class="table-responsive">
+
+                    <table
+                        class="table table-hover table-bordered mb-0"
+                    >
+
+                        <!-- TABLE HEADER -->
+
+                        <thead class="table-dark">
+
+                            <tr>
+
+                                <th>
+                                    #
+                                </th>
+
+                                <th>
+                                    Company
+                                </th>
+
+                                <th>
+                                    Job Role
+                                </th>
+
+                                <th>
+                                    Type
+                                </th>
+
+                                <th>
+                                    Package
+                                </th>
+
+                                <th>
+                                    Location
+                                </th>
+
+                                <th>
+                                    Min CGPA
+                                </th>
+
+                                <th>
+                                    Eligible Branches
+                                </th>
+
+                                <th>
+                                    Graduation Year
+                                </th>
+
+                                <th>
+                                    Deadline
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Applicants
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <!-- TABLE BODY -->
+
+                        <tbody>
+
+                            {% for job in jobs %}
+
+                                <tr>
+
+
+                                    <!-- NUMBER -->
+
+                                    <td>
+                                        {{ loop.index }}
+                                    </td>
+
+
+                                    <!-- COMPANY -->
+
+                                    <td>
+
+                                        <strong>
+                                            {{ job.company_name }}
+                                        </strong>
+
+                                    </td>
+
+
+                                    <!-- ROLE -->
+
+                                    <td>
+
+                                        <strong>
+                                            {{ job.role }}
+                                        </strong>
+
+                                    </td>
+
+
+                                    <!-- JOB TYPE -->
+
+                                    <td>
+
+                                        {% if job.job_type %}
+
+                                            {% if job.job_type == "Full Time" %}
+
+                                                <span class="badge bg-primary">
+                                                    Full Time
+                                                </span>
+
+                                            {% elif job.job_type == "Internship" %}
+
+                                                <span class="badge bg-info text-dark">
+                                                    Internship
+                                                </span>
+
+                                            {% elif job.job_type == "Contract" %}
+
+                                                <span class="badge bg-warning text-dark">
+                                                    Contract
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="badge bg-secondary">
+                                                    {{ job.job_type }}
+                                                </span>
+
+                                            {% endif %}
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+                                                -
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- PACKAGE -->
+
+                                    <td>
+
+                                        {% if job.package %}
+
+                                            <strong>
+                                                ₹{{ job.package }} LPA
+                                            </strong>
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+                                                Not specified
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- LOCATION -->
+
+                                    <td>
+
+                                        {% if job.location %}
+
+                                            📍 {{ job.location }}
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+                                                Not specified
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- MIN CGPA -->
+
+                                    <td>
+
+                                        <span class="badge bg-light text-dark border">
+
+                                            {{ job.min_cgpa }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- ELIGIBLE BRANCHES -->
+
+                                    <td>
+
+                                        {% if job.eligible_branches %}
+
+                                            {{ job.eligible_branches }}
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+                                                -
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- GRADUATION YEAR -->
+
+                                    <td>
+
+                                        {{ job.graduation_year }}
+
+                                    </td>
+
+
+                                    <!-- DEADLINE -->
+
+                                    <td>
+
+                                        {% if job.deadline %}
+
+                                            {{ job.deadline }}
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+                                                No deadline
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- STATUS -->
+
+                                    <td>
+
+                                        {% if job.status == "Open" %}
+
+                                            <span
+                                                class="badge bg-success"
+                                            >
+                                                ✓ Open
+                                            </span>
+
+                                        {% elif job.status == "Closed" %}
+
+                                            <span
+                                                class="badge bg-secondary"
+                                            >
+                                                🔒 Closed
+                                            </span>
+
+                                        {% else %}
+
+                                            <span
+                                                class="badge bg-warning text-dark"
+                                            >
+                                                {{ job.status }}
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- APPLICANTS -->
+
+                                    <td>
+
+                                        <a
+                                            href="{{ url_for(
+                                                'view_applicants',
+                                                job_id=job.id
+                                            ) }}"
+                                            class="btn btn-sm btn-dark"
+                                        >
+                                            👥 View
+                                        </a>
+
+                                    </td>
+
+
+                                    <!-- ACTIONS -->
+
+                                    <td class="action-buttons">
+
+                                        <div
+                                            class="d-flex flex-wrap gap-2"
+                                        >
+
+
+                                            <!-- EDIT -->
+
+                                            <a
+                                                href="{{ url_for(
+                                                    'edit_job',
+                                                    job_id=job.id
+                                                ) }}"
+                                                class="btn btn-sm btn-primary"
+                                            >
+                                                ✏️ Edit
+                                            </a>
+
+
+                                            <!-- CLOSE -->
+
+                                            {% if job.status == "Open" %}
+
+                                                <form
+                                                    method="POST"
+                                                    action="{{ url_for(
+                                                        'close_job',
+                                                        job_id=job.id
+                                                    ) }}"
+                                                    class="d-inline"
+                                                    onsubmit="return confirm(
+                                                        'Are you sure you want to close this placement drive? Students will no longer be able to apply.'
+                                                    );"
+                                                >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-sm btn-danger"
+                                                    >
+                                                        🔒 Close
+                                                    </button>
+
+                                                </form>
+
+                                            {% else %}
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-secondary"
+                                                    disabled
+                                                >
+                                                    🔒 Closed
+                                                </button>
+
+                                            {% endif %}
+
+
+                                        </div>
+
+                                    </td>
+
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+            {% else %}
+
+
+                <!-- NO JOBS -->
+
+                <div class="text-center empty-box">
+
+                    <div
+                        style="font-size: 55px;"
+                        class="mb-3"
+                    >
+                        💼
+                    </div>
+
+
+                    <h4 class="fw-bold">
+                        No Placement Drives Found
+                    </h4>
+
+
+                    <p class="text-muted">
+
+                        You have not posted any placement
+                        drives yet.
+
+                    </p>
+
+
+                    <a
+                        href="{{ url_for('add_job') }}"
+                        class="btn btn-success"
+                    >
+                        + Post First Job
+                    </a>
+
+                </div>
+
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         LEGEND
+    ================================================== -->
+
+    {% if jobs %}
+
+        <div class="mt-4">
+
+            <small class="text-muted">
+
+                <strong>Status:</strong>
+
+                <span class="badge bg-success ms-2">
+                    Open
+                </span>
+
+                Students can apply to this drive.
+
+                <span class="badge bg-secondary ms-2">
+                    Closed
+                </span>
+
+                Students cannot apply to this drive.
+
+            </small>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =================================================
+         BACK BUTTON
+    ================================================== -->
+
+    <div class="mt-4">
+
+        <a
+            href="{{ url_for('coordinator_dashboard') }}"
+            class="btn btn-secondary"
+        >
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="bg-dark text-white text-center py-3">
+
+    <small>
+        Student Placement Management System
+        | T&P Coordinator Portal
+    </small>
+
+</footer>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+</body>
+
+</html>

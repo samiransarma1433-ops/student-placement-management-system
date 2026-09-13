@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Coordinator Dashboard - Placement Management System
+    </title>
+
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        body {
+            background-color: #f5f7fb;
+        }
+
+
+        .navbar-brand {
+            font-weight: 700;
+        }
+
+
+        .welcome-section {
+
+            background: linear-gradient(
+                135deg,
+                #0d6efd,
+                #084298
+            );
+
+            color: white;
+
+            border-radius: 15px;
+
+            padding: 30px;
+
+            margin-bottom: 30px;
+        }
+
+
+        .dashboard-card {
+
+            border: none;
+
+            border-radius: 15px;
+
+            transition: 0.2s;
+
+            height: 100%;
+        }
+
+
+        .dashboard-card:hover {
+
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(0, 0, 0, 0.12);
+        }
+
+
+        .card-icon {
+
+            font-size: 38px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .quick-actions {
+
+            border-radius: 15px;
+
+            border: none;
+        }
+
+
+        .status-card {
+
+            border-radius: 12px;
+
+            border: none;
+        }
+
+
+        .section-title {
+
+            font-weight: 700;
+
+            margin-bottom: 20px;
+        }
+
+
+        footer {
+
+            margin-top: 50px;
+
+            padding: 20px;
+
+            background-color: #212529;
+
+            color: white;
+
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar navbar-dark bg-dark">
+
+    <div class="container">
+
+        <a
+            class="navbar-brand"
+            href="{{ url_for('coordinator_dashboard') }}"
+        >
+            🎓 Placement Management System
+        </a>
+
+
+        <div class="d-flex align-items-center">
+
+            <span class="text-white me-3">
+
+                👤 {{ coordinator_name }}
+
+            </span>
+
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="btn btn-outline-light btn-sm"
+            >
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="container py-5">
+
+
+    <!-- ================= WELCOME ================= -->
+
+    <div class="welcome-section">
+
+        <h2 class="fw-bold">
+
+            Welcome, {{ coordinator_name }} 👋
+
+        </h2>
+
+
+        <p class="mb-0">
+
+            Manage companies, placement drives,
+            applicants and placement statistics
+            from one place.
+
+        </p>
+
+    </div>
+
+
+    <!-- ================= FLASH MESSAGES ================= -->
+
+    {% with messages = get_flashed_messages(
+        with_categories=true
+    ) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="alert alert-{{ category }} alert-dismissible fade show"
+                >
+
+                    {{ message }}
+
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                    ></button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- ================= MANAGEMENT ================= -->
+
+    <h4 class="section-title">
+
+        Placement Management
+
+    </h4>
+
+
+    <div class="row g-4">
+
+
+        <!-- ADD COMPANY -->
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card dashboard-card shadow-sm">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="card-icon">
+                        🏢
+                    </div>
+
+
+                    <h5 class="fw-bold">
+                        Add Company
+                    </h5>
+
+
+                    <p class="text-muted">
+
+                        Add a new company to the
+                        placement database.
+
+                    </p>
+
+
+                    <a
+                        href="{{ url_for('add_company') }}"
+                        class="btn btn-primary"
+                    >
+                        Add Company
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- COMPANIES -->
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card dashboard-card shadow-sm">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="card-icon">
+                        🏭
+                    </div>
+
+
+                    <h5 class="fw-bold">
+                        Companies
+                    </h5>
+
+
+                    <p class="text-muted">
+
+                        View all companies registered
+                        for placements.
+
+                    </p>
+
+
+                    <a
+                        href="{{ url_for('company_list') }}"
+                        class="btn btn-outline-primary"
+                    >
+                        View Companies
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- POST JOB -->
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card dashboard-card shadow-sm">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="card-icon">
+                        📢
+                    </div>
+
+
+                    <h5 class="fw-bold">
+                        Post Job
+                    </h5>
+
+
+                    <p class="text-muted">
+
+                        Create a new placement drive
+                        with eligibility criteria.
+
+                    </p>
+
+
+                    <a
+                        href="{{ url_for('add_job') }}"
+                        class="btn btn-success"
+                    >
+                        Post Job
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PLACEMENT DRIVES -->
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card dashboard-card shadow-sm">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="card-icon">
+                        💼
+                    </div>
+
+
+                    <h5 class="fw-bold">
+                        Placement Drives
+                    </h5>
+
+
+                    <p class="text-muted">
+
+                        View and manage all placement
+                        opportunities.
+
+                    </p>
+
+
+                    <a
+                        href="{{ url_for('job_list') }}"
+                        class="btn btn-outline-success"
+                    >
+                        View Drives
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- APPLICANTS -->
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card dashboard-card shadow-sm">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="card-icon">
+                        👥
+                    </div>
+
+
+                    <h5 class="fw-bold">
+                        Applicants
+                    </h5>
+
+
+                    <p class="text-muted">
+
+                        View students who have applied
+                        for placement drives.
+
+                    </p>
+
+
+                    <a
+                        href="{{ url_for('job_list') }}"
+                        class="btn btn-outline-dark"
+                    >
+                        View Applicants
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STATISTICS -->
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card dashboard-card shadow-sm">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="card-icon">
+                        📊
+                    </div>
+
+
+                    <h5 class="fw-bold">
+                        Placement Statistics
+                    </h5>
+
+
+                    <p class="text-muted">
+
+                        View overall and branch-wise
+                        placement performance.
+
+                    </p>
+
+
+                    <a
+                        href="{{ url_for(
+                            'placement_statistics'
+                        ) }}"
+                        class="btn btn-warning"
+                    >
+                        View Statistics
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= QUICK ACTIONS ================= -->
+
+    <div class="card quick-actions shadow-sm mt-5">
+
+        <div class="card-body p-4">
+
+            <h4 class="section-title">
+                Quick Actions
+            </h4>
+
+
+            <div class="d-flex flex-wrap gap-2">
+
+
+                <a
+                    href="{{ url_for('add_company') }}"
+                    class="btn btn-primary"
+                >
+                    ➕ Add Company
+                </a>
+
+
+                <a
+                    href="{{ url_for('company_list') }}"
+                    class="btn btn-outline-primary"
+                >
+                    🏢 Companies
+                </a>
+
+
+                <a
+                    href="{{ url_for('add_job') }}"
+                    class="btn btn-success"
+                >
+                    ➕ Post Job
+                </a>
+
+
+                <a
+                    href="{{ url_for('job_list') }}"
+                    class="btn btn-outline-success"
+                >
+                    💼 Placement Drives
+                </a>
+
+
+                <a
+                    href="{{ url_for('job_list') }}"
+                    class="btn btn-dark"
+                >
+                    👥 Applicants
+                </a>
+
+
+                <a
+                    href="{{ url_for(
+                        'placement_statistics'
+                    ) }}"
+                    class="btn btn-warning"
+                >
+                    📊 Placement Statistics
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= SYSTEM STATUS ================= -->
+
+    <h4 class="section-title mt-5">
+
+        System Status
+
+    </h4>
+
+
+    <div class="row g-3">
+
+
+        <!-- COMPANIES -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card status-card shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Companies
+                    </h6>
+
+
+                    <h4 class="text-success">
+                        ✓
+                    </h4>
+
+
+                    <small>
+                        Company management active
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DRIVES -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card status-card shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Placement Drives
+                    </h6>
+
+
+                    <h4 class="text-success">
+                        ✓
+                    </h4>
+
+
+                    <small>
+                        Job posting active
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- APPLICATIONS -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card status-card shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Applications
+                    </h6>
+
+
+                    <h4 class="text-success">
+                        ✓
+                    </h4>
+
+
+                    <small>
+                        Applicant management active
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STATISTICS -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card status-card shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Statistics
+                    </h6>
+
+
+                    <h4 class="text-success">
+                        ✓
+                    </h4>
+
+
+                    <small>
+                        Placement analytics active
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= RESPONSIBILITIES ================= -->
+
+    <div class="card shadow-sm mt-5">
+
+        <div class="card-body p-4">
+
+            <h4 class="section-title">
+
+                Coordinator Responsibilities
+
+            </h4>
+
+
+            <div class="row">
+
+
+                <div class="col-md-6">
+
+                    <ul class="list-group list-group-flush">
+
+                        <li class="list-group-item">
+                            ✓ Add and manage companies
+                        </li>
+
+                        <li class="list-group-item">
+                            ✓ Create placement drives
+                        </li>
+
+                        <li class="list-group-item">
+                            ✓ Define student eligibility criteria
+                        </li>
+
+                        <li class="list-group-item">
+                            ✓ Monitor student applications
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <ul class="list-group list-group-flush">
+
+                        <li class="list-group-item">
+                            ✓ View applicant profiles
+                        </li>
+
+                        <li class="list-group-item">
+                            ✓ Update application status
+                        </li>
+
+                        <li class="list-group-item">
+                            ✓ View student resumes
+                        </li>
+
+                        <li class="list-group-item">
+                            ✓ Analyze placement statistics
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <p class="mb-0">
+
+        Student Placement Management System
+
+    </p>
+
+
+    <small>
+
+        T&P Coordinator Portal
+
+    </small>
+
+</footer>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+</body>
+
+</html>

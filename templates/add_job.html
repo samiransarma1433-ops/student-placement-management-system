@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Post Job</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- ===================================================== -->
+<!-- NAVBAR -->
+<!-- ===================================================== -->
+
+<nav class="navbar navbar-dark bg-dark">
+
+    <div class="container">
+
+        <a
+            class="navbar-brand"
+            href="{{ url_for('coordinator_dashboard') }}"
+        >
+            Placement Management System
+        </a>
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="btn btn-outline-light"
+        >
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ===================================================== -->
+<!-- FORM -->
+<!-- ===================================================== -->
+
+<div class="container mt-5 mb-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-9">
+
+            <div class="card shadow">
+
+                <div class="card-body p-4">
+
+                    <h2 class="mb-4">
+                        Post Placement Job
+                    </h2>
+
+
+                    <!-- Flash Messages -->
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+
+                        {% for category, message in messages %}
+
+                            <div
+                                class="alert alert-{{ category }}"
+                                role="alert"
+                            >
+                                {{ message }}
+                            </div>
+
+                        {% endfor %}
+
+                    {% endwith %}
+
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('add_job') }}"
+                    >
+
+
+                        <!-- ================================================= -->
+                        <!-- COMPANY INFORMATION -->
+                        <!-- ================================================= -->
+
+                        <h5 class="mb-3">
+                            Company Information
+                        </h5>
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Company
+                            </label>
+
+                            <select
+                                name="company_id"
+                                class="form-select"
+                                required
+                            >
+
+                                <option value="">
+                                    Select Company
+                                </option>
+
+                                {% for company in companies %}
+
+                                    <option value="{{ company.id }}">
+                                        {{ company.name }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                            {% if not companies %}
+
+                                <div class="text-danger mt-2">
+                                    No companies found.
+                                    Please add a company first.
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- JOB INFORMATION -->
+                        <!-- ================================================= -->
+
+                        <h5 class="mb-3">
+                            Job Information
+                        </h5>
+
+
+                        <div class="row">
+
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Job Role
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="role"
+                                    class="form-control"
+                                    placeholder="e.g. Software Engineer"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Job Type
+                                </label>
+
+                                <select
+                                    name="job_type"
+                                    class="form-select"
+                                >
+
+                                    <option value="">
+                                        Select Job Type
+                                    </option>
+
+                                    <option value="Full Time">
+                                        Full Time
+                                    </option>
+
+                                    <option value="Internship">
+                                        Internship
+                                    </option>
+
+                                    <option value="Contract">
+                                        Contract
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Package (LPA)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="package"
+                                    class="form-control"
+                                    placeholder="e.g. 12"
+                                    step="0.01"
+                                    min="0"
+                                >
+
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Job Location
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="location"
+                                    class="form-control"
+                                    placeholder="e.g. Bangalore"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- ELIGIBILITY -->
+                        <!-- ================================================= -->
+
+                        <h5 class="mb-3 mt-3">
+                            Eligibility Criteria
+                        </h5>
+
+
+                        <div class="row">
+
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label">
+                                    Minimum CGPA
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="min_cgpa"
+                                    class="form-control"
+                                    placeholder="e.g. 7.5"
+                                    step="0.01"
+                                    min="0"
+                                    max="10"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label">
+                                    Minimum 10th %
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="min_10th"
+                                    class="form-control"
+                                    placeholder="e.g. 60"
+                                    step="0.01"
+                                    min="0"
+                                    max="100"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label">
+                                    Minimum 12th %
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="min_12th"
+                                    class="form-control"
+                                    placeholder="e.g. 60"
+                                    step="0.01"
+                                    min="0"
+                                    max="100"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Eligible Branches
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="eligible_branches"
+                                    class="form-control"
+                                    placeholder="e.g. CSE, ECE, Instrumentation Engineering"
+                                    required
+                                >
+
+                                <small class="text-muted">
+                                    Separate multiple branches using commas.
+                                </small>
+
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Graduation Year
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="graduation_year"
+                                    class="form-control"
+                                    placeholder="e.g. 2027"
+                                    min="2020"
+                                    max="2100"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="col-md-12 mb-3">
+
+                                <label class="form-label">
+                                    Required Skills
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="required_skills"
+                                    class="form-control"
+                                    placeholder="e.g. C++, Python, SQL"
+                                >
+
+                                <small class="text-muted">
+                                    Separate multiple skills using commas.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- JOB DESCRIPTION -->
+                        <!-- ================================================= -->
+
+                        <h5 class="mb-3 mt-3">
+                            Job Details
+                        </h5>
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Job Description
+                            </label>
+
+                            <textarea
+                                name="description"
+                                class="form-control"
+                                rows="5"
+                                placeholder="Enter job description..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Selection Process
+                            </label>
+
+                            <textarea
+                                name="selection_process"
+                                class="form-control"
+                                rows="3"
+                                placeholder="e.g. Online Assessment, Technical Interview, HR Interview"
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Application Deadline
+                            </label>
+
+                            <input
+                                type="date"
+                                name="deadline"
+                                class="form-control"
+                            >
+
+                        </div>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- BUTTONS -->
+                        <!-- ================================================= -->
+
+                        <div class="d-flex gap-2">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Post Job
+                            </button>
+
+                            <a
+                                href="{{ url_for('coordinator_dashboard') }}"
+                                class="btn btn-secondary"
+                            >
+                                Cancel
+                            </a>
+
+                        </div>
+
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

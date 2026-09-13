@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Placement Statistics</title>
+
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        body {
+            background-color: #f5f7fb;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+        }
+
+        .page-header {
+            background: linear-gradient(
+                135deg,
+                #0d6efd,
+                #084298
+            );
+
+            color: white;
+            padding: 40px 0;
+        }
+
+        .stat-card {
+            border: none;
+            border-radius: 15px;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.08);
+
+            height: 100%;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .section-card {
+            border: none;
+            border-radius: 15px;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .table th {
+            white-space: nowrap;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .percentage {
+            font-weight: 700;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 25px 0;
+
+            background-color: #212529;
+            color: white;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================
+     NAVBAR
+========================================== -->
+
+<nav class="navbar navbar-dark bg-dark">
+
+    <div class="container">
+
+
+        <a
+            class="navbar-brand"
+            href="{{ url_for('coordinator_dashboard') }}"
+        >
+            🎓 Placement Management
+        </a>
+
+
+        <div class="d-flex align-items-center">
+
+            <span class="text-white me-3">
+
+                {{ session.get(
+                    'coordinator_name',
+                    'Coordinator'
+                ) }}
+
+            </span>
+
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="btn btn-outline-light btn-sm"
+            >
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ==========================================
+     PAGE HEADER
+========================================== -->
+
+<section class="page-header">
+
+    <div class="container">
+
+        <h1 class="fw-bold">
+            Placement Statistics
+        </h1>
+
+        <p class="mb-0">
+
+            Overall and branch-wise placement performance
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     MAIN CONTENT
+========================================== -->
+
+<div class="container my-5">
+
+
+    <!-- ======================================
+         OVERALL STATISTICS
+    ======================================= -->
+
+    <h3 class="fw-bold mb-4">
+        Overall Placement
+    </h3>
+
+
+    <div class="row g-4 mb-5">
+
+
+        <!-- Total Students -->
+
+        <div class="col-md-3">
+
+            <div class="card stat-card">
+
+                <div class="card-body text-center">
+
+                    <div class="stat-number text-primary">
+
+                        {{ total_students }}
+
+                    </div>
+
+                    <div class="stat-label">
+
+                        Total Students
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Placed Students -->
+
+        <div class="col-md-3">
+
+            <div class="card stat-card">
+
+                <div class="card-body text-center">
+
+                    <div class="stat-number text-success">
+
+                        {{ placed_students }}
+
+                    </div>
+
+                    <div class="stat-label">
+
+                        Placed Students
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Unplaced Students -->
+
+        <div class="col-md-3">
+
+            <div class="card stat-card">
+
+                <div class="card-body text-center">
+
+                    <div class="stat-number text-danger">
+
+                        {{ unplaced_students }}
+
+                    </div>
+
+                    <div class="stat-label">
+
+                        Unplaced Students
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Placement Percentage -->
+
+        <div class="col-md-3">
+
+            <div class="card stat-card">
+
+                <div class="card-body text-center">
+
+                    <div class="stat-number text-warning">
+
+                        {{ placement_percentage }}%
+
+                    </div>
+
+                    <div class="stat-label">
+
+                        Overall Placement
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================
+         BRANCH-WISE STATISTICS
+    ======================================= -->
+
+    <div class="card section-card mb-5">
+
+        <div class="card-body">
+
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+
+                    <h3 class="fw-bold mb-1">
+
+                        Branch-wise Placement
+
+                    </h3>
+
+                    <p class="text-muted mb-0">
+
+                        Placement performance by branch
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            {% if branch_statistics %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Branch</th>
+
+                            <th>Total Students</th>
+
+                            <th>Eligible</th>
+
+                            <th>Placed</th>
+
+                            <th>Unplaced</th>
+
+                            <th>Placement %</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for branch in branch_statistics %}
+
+                        <tr>
+
+
+                            <td>
+
+                                {{ loop.index }}
+
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+
+                                    {{ branch.branch }}
+
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                {{ branch.total }}
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="badge bg-info">
+
+                                    {{ branch.eligible }}
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    {{ branch.placed }}
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="badge bg-danger">
+
+                                    {{ branch.unplaced }}
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                {% if branch.percentage >= 75 %}
+
+                                    <span class="text-success percentage">
+
+                                        {{ branch.percentage }}%
+
+                                    </span>
+
+                                {% elif branch.percentage >= 50 %}
+
+                                    <span class="text-warning percentage">
+
+                                        {{ branch.percentage }}%
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="text-danger percentage">
+
+                                        {{ branch.percentage }}%
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="text-center py-5">
+
+                <h5>
+                    No branch statistics available
+                </h5>
+
+                <p class="text-muted">
+                    Student profiles have not been completed yet.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================
+         COMPANY-WISE STATISTICS
+    ======================================= -->
+
+    <div class="card section-card mb-5">
+
+        <div class="card-body">
+
+
+            <h3 class="fw-bold mb-1">
+
+                Company-wise Placement
+
+            </h3>
+
+            <p class="text-muted mb-4">
+
+                Applications and selected students
+
+            </p>
+
+
+
+            {% if company_statistics %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Company</th>
+
+                            <th>Job Role</th>
+
+                            <th>Total Applications</th>
+
+                            <th>Selected</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for company in company_statistics %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ loop.index }}
+
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+
+                                    {{ company.company_name }}
+
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                {{ company.role }}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ company.total_applications }}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if company.selected_students > 0 %}
+
+                                    <span class="badge bg-success">
+
+                                        {{ company.selected_students }}
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+
+                                        0
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="text-center py-5">
+
+                <h5>
+                    No company data available
+                </h5>
+
+                <p class="text-muted">
+
+                    Company applications will appear here.
+
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================
+         BACK BUTTON
+    ======================================= -->
+
+    <a
+        href="{{ url_for('coordinator_dashboard') }}"
+        class="btn btn-outline-secondary"
+    >
+
+        ← Back to Dashboard
+
+    </a>
+
+</div>
+
+
+
+<!-- ==========================================
+     FOOTER
+========================================== -->
+
+<footer>
+
+    <div class="container text-center">
+
+        <p class="mb-0">
+
+            Student Placement Management System
+
+        </p>
+
+        <small>
+
+            T&P Coordinator Portal
+
+        </small>
+
+    </div>
+
+</footer>
+
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+</body>
+
+</html>

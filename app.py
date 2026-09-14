@@ -7,6 +7,30 @@ from database import get_db_connection
 
 
 app = Flask(__name__)
+def normalize_branch(branch):
+    if not branch:
+        return ""
+
+    value = " ".join(branch.strip().upper().split())
+
+    aliases = {
+        "CSE": "COMPUTER SCIENCE ENGINEERING",
+        "COMPUTER SCIENCE ENGINEERING": "COMPUTER SCIENCE ENGINEERING",
+
+        "ECE": "ELECTRONICS AND COMMUNICATION ENGINEERING",
+        "ELECTRONICS AND COMMUNICATION ENGINEERING":
+            "ELECTRONICS AND COMMUNICATION ENGINEERING",
+
+        "EEE": "ELECTRICAL AND ELECTRONICS ENGINEERING",
+        "ELECTRICAL AND ELECTRONICS ENGINEERING":
+            "ELECTRICAL AND ELECTRONICS ENGINEERING",
+
+        "IE": "INSTRUMENTATION ENGINEERING",
+        "INSTRUMENTATION ENGINEERING":
+            "INSTRUMENTATION ENGINEERING",
+    }
+
+    return aliases.get(value, value)
 
 # Secret key for sessions and flash messages
 app.secret_key = "placement-management-secret-key"
@@ -382,9 +406,7 @@ def student_dashboard():
     cursor = None
 
     try:
-
         connection = get_db_connection()
-
         cursor = connection.cursor(dictionary=True)
 
         cursor.execute("""
@@ -396,12 +418,8 @@ def student_dashboard():
         student = cursor.fetchone()
 
         if student is None:
-
             session.clear()
-
-            return redirect(
-                url_for("student_login")
-            )
+            return redirect(url_for("student_login"))
 
         cursor.execute("""
             SELECT
@@ -417,51 +435,37 @@ def student_dashboard():
         jobs = cursor.fetchall()
 
         for job in jobs:
-
             eligible = True
             reason = ""
 
             if job["min_cgpa"] is not None:
-
                 if (
                     student["cgpa"] is None
                     or student["cgpa"] < job["min_cgpa"]
                 ):
-
                     eligible = False
-
                     reason = (
                         "Your CGPA is below "
                         "the required CGPA."
                     )
 
             if eligible and job["min_10th"] is not None:
-
                 if (
                     student["tenth_percentage"] is None
-                    or
-                    student["tenth_percentage"]
-                    < job["min_10th"]
+                    or student["tenth_percentage"] < job["min_10th"]
                 ):
-
                     eligible = False
-
                     reason = (
                         "Your 10th percentage is below "
                         "the required percentage."
                     )
 
             if eligible and job["min_12th"] is not None:
-
                 if (
                     student["twelfth_percentage"] is None
-                    or
-                    student["twelfth_percentage"]
-                    < job["min_12th"]
+                    or student["twelfth_percentage"] < job["min_12th"]
                 ):
-
                     eligible = False
-
                     reason = (
                         "Your 12th percentage is below "
                         "the required percentage."
@@ -469,50 +473,32 @@ def student_dashboard():
 
             if (
                 eligible
-                and
-                job["graduation_year"] is not None
+                and job["graduation_year"] is not None
             ):
-
                 if (
                     student["graduation_year"] is None
-                    or
-                    student["graduation_year"]
-                    != job["graduation_year"]
+                    or student["graduation_year"] != job["graduation_year"]
                 ):
-
                     eligible = False
-
-                    reason = (
-                        "Your graduation year does not match."
-                    )
+                    reason = "Your graduation year does not match."
 
             if eligible and job["eligible_branches"]:
-
                 branches = [
-                    branch.strip().upper()
-                    for branch in
-                    job["eligible_branches"].split(",")
+                    normalize_branch(branch)
+                    for branch in job["eligible_branches"].split(",")
                 ]
 
-                student_branch = (
-                    student["branch"].strip().upper()
-                    if student["branch"]
-                    else ""
-                )
+                student_branch = normalize_branch(student["branch"])
 
                 if student_branch not in branches:
-
                     eligible = False
-
                     reason = (
                         "Your branch is not eligible "
                         "for this job."
                     )
 
             if not student["profile_completed"]:
-
                 eligible = False
-
                 reason = "Please complete your profile."
 
             job["eligible"] = eligible
@@ -551,7 +537,6 @@ def student_dashboard():
         )
 
     except Exception as e:
-
         print(
             "STUDENT DASHBOARD ERROR:",
             e
@@ -567,7 +552,6 @@ def student_dashboard():
         )
 
     finally:
-
         if cursor:
             cursor.close()
 
@@ -750,15 +734,13 @@ def student_job_details(job_id):
         if job["eligible_branches"]:
 
             eligible_branches = [
-                branch.strip().upper()
+                normalize_branch(branch)
                 for branch in
                 job["eligible_branches"].split(",")
             ]
 
-            student_branch = (
-                student["branch"].strip().upper()
-                if student["branch"]
-                else ""
+            student_branch = normalize_branch(
+                student["branch"]
             )
 
             if student_branch not in eligible_branches:
@@ -939,15 +921,13 @@ def student_apply(job_id):
         if job["eligible_branches"]:
 
             branches = [
-                branch.strip().upper()
+                normalize_branch(branch)
                 for branch in
                 job["eligible_branches"].split(",")
             ]
 
-            student_branch = (
-                student["branch"].strip().upper()
-                if student["branch"]
-                else ""
+            student_branch = normalize_branch(
+                student["branch"]
             )
 
             if student_branch not in branches:
@@ -2756,9 +2736,21 @@ def placement_statistics():
                     OR FIND_IN_SET(
                         UPPER(s.branch),
                         REPLACE(
-                            UPPER(j.eligible_branches),
-                            ', ',
-                            ','
+                            REPLACE(
+                                REPLACE(
+                                    REPLACE(
+                                        UPPER(j.eligible_branches),
+                                        'CSE',
+                                        'COMPUTER SCIENCE ENGINEERING'
+                                    ),
+                                    'ECE',
+                                    'ELECTRONICS AND COMMUNICATION ENGINEERING'
+                                ),
+                                'EEE',
+                                'ELECTRICAL AND ELECTRONICS ENGINEERING'
+                            ),
+                            'IE',
+                            'INSTRUMENTATION ENGINEERING'
                         )
                     )
                 )

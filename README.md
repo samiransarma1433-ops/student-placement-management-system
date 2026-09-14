@@ -5,7 +5,7 @@ A web-based Student Placement Management System that helps students discover pla
 ## 🌐 Live Demo
 
 🔗 **Live Website:**  
-student-placement-management-system-production.up.railway.app
+https://student-placement-management-system-production.up.railway.app
 
 ## 📌 Project Overview
 
